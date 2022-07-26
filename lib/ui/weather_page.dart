@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:simple_weather_app/bloc/weather_bloc/weather_bloc.dart';
 import 'package:simple_weather_app/ui/city_page.dart';
 
@@ -47,6 +48,15 @@ class WeatherPage extends StatelessWidget {
               final presentState = state as WeatherPresent;
               final precipitationIconName = state.forecast.precipitation.type?.name;
 
+              final params = <String, String>{
+                'По ощущениям': _temperatureValueToString(state.forecast.temperature.feels_like),
+                'Ветер': "${state.forecast.wind.speed} м/с, ${state.forecast.wind.direction}",
+                'Влажность': "${state.forecast.humidity} %",
+                'Осадки': "${state.forecast.precipitation.value} мм",
+                'Давление': "${state.forecast.pressure} hPa",
+                'Солнце': "${_timeToString(state.forecast.sun.set)} / ${_timeToString(state.forecast.sun.rise)}",
+              };
+
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -56,11 +66,38 @@ class WeatherPage extends StatelessWidget {
                       children: [
                         Text(city),
                         Text(', '),
-                        Text(presentState.time.toString()),
+                        Text(_dateTimeToString(presentState.time)),
                       ],
                     ),
-                    if (precipitationIconName != null)
-                      SvgPicture.asset("assets/images/${precipitationIconName}.svg", width: 50, height: 50)
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(_temperatureValueToString(presentState.forecast.temperature.current), style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        )),
+                        SizedBox(width: 10),
+                        if (precipitationIconName != null)
+                          SvgPicture.asset("assets/images/${precipitationIconName}.svg", width: 50, height: 50),
+                        SizedBox(width: 10),
+                        Text(presentState.forecast.clouds),
+                      ],
+                    ),
+                    for (final pair in params.entries)
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(pair.key),
+                              Text(pair.value),
+                            ],
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               );
@@ -69,5 +106,14 @@ class WeatherPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _dateTimeToString(DateTime value) => DateFormat('dd.MM HH:mm:ss', 'ru_RU').format(value);
+
+  String _timeToString(DateTime value) => DateFormat('HH:mm', 'ru_RU').format(value);
+
+  String _temperatureValueToString(int value) {
+    final sign = value.isNegative ? '-' : (value == 0 ? '' : '+');
+    return "${sign}${value}";
   }
 }

@@ -14,6 +14,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   WeatherBloc(this.city) : super(WeatherInitial()) {
     // todo: необходимо подставить адрес запущенного бэка
+    // я тестировал в Chrome, т.к. локалхост в эмулятор Андроида прокинуть не удалось, а публичного сервера нет
     final service = WeatherService('http://localhost');
 
     on<WeatherRefreshStarted>((event, emit) async {

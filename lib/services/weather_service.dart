@@ -21,10 +21,12 @@ class WeatherService {
       throw ApiException(result['error'], response.statusCode);
     }
 
+    final tzOffset = DateTime.now().timeZoneOffset;
+
     return WeatherForecast(
       sun: SunForecast(
-        rise: DateTime.parse(result['sun']['rise']),
-        set: DateTime.parse(result['sun']['set']),
+        rise: DateTime.parse(result['sun']['rise']).add(tzOffset),
+        set: DateTime.parse(result['sun']['set']).add(tzOffset),
       ),
       temperature: TemperatureForecast(
         current: result['temperature']['current'],
