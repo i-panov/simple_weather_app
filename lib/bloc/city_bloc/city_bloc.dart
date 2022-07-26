@@ -10,13 +10,26 @@ class CityBloc extends Bloc<CityEvent, CityState> {
 
   CityBloc() : super(CityInitial()) {
     on<CityInitializationStarted>((event, emit) async {
+      emit(CityLoading());
       final prefs = await SharedPreferences.getInstance();
       final city = prefs.getString(_key);
 
       if (city != null && city.isNotEmpty) {
         emit(CitySelected(city));
       } else {
-        emit(CityWaitSelection());
+        emit(CityInitial());
+      }
+    });
+
+    on<CitySelectionStarted>((event, emit) async {
+      emit(CityLoading());
+
+      if (event.value.isNotEmpty) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_key, event.value);
+        emit(CitySelected(event.value));
+      } else {
+        emit(CityInitial());
       }
     });
   }

@@ -1,7 +1,6 @@
 part of 'city_bloc.dart';
 
 abstract class CityEvent {
-  const CityEvent();
 }
 
 class CityInitializationStarted extends CityEvent {

@@ -1,7 +1,6 @@
 part of 'city_bloc.dart';
 
 abstract class CityState extends Equatable {
-  const CityState();
 }
 
 class CityInitial extends CityState {
@@ -9,7 +8,7 @@ class CityInitial extends CityState {
   List<Object> get props => [];
 }
 
-class CityWaitSelection extends CityState {
+class CityLoading extends CityState {
   @override
   List<Object> get props => [];
 }
