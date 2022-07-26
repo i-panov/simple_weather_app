@@ -3,7 +3,7 @@ import 'package:simple_weather_app/models/sun_forecast.dart';
 import 'package:simple_weather_app/models/temperature_forecast.dart';
 import 'package:simple_weather_app/models/wind_forecast.dart';
 
-class WeatherResponse {
+class WeatherForecast {
   final SunForecast sun;
   final TemperatureForecast temperature;
   final WindForecast wind;
@@ -21,7 +21,7 @@ class WeatherResponse {
   /// Видимость в метрах
   final int visibility;
 
-  WeatherResponse({
+  WeatherForecast({
     required this.sun,
     required this.temperature,
     required this.wind,

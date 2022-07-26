@@ -4,22 +4,24 @@ import 'package:simple_weather_app/models/precipitation_forecast.dart';
 import 'package:simple_weather_app/models/precipitation_type.dart';
 import 'package:simple_weather_app/models/sun_forecast.dart';
 import 'package:simple_weather_app/models/temperature_forecast.dart';
-import 'package:simple_weather_app/models/weather_response.dart';
+import 'package:simple_weather_app/models/weather_forecast.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_weather_app/models/wind_forecast.dart';
 
 class WeatherService {
-  Future<WeatherResponse> request(String city) async {
-    // todo: необходимо подставить адрес запущенного бэка
-    final uri = Uri.parse("http://localhost?city=$city");
-    final response = await http.get(uri);
+  final String apiHost;
+
+  WeatherService(this.apiHost);
+
+  Future<WeatherForecast> request(String city) async {
+    final response = await http.get(Uri.parse("${apiHost}?city=$city"));
     final result = jsonDecode(response.body) as Map<String, dynamic>;
 
     if (result.containsKey('error')) {
       throw ApiException(result['error'], response.statusCode);
     }
 
-    return WeatherResponse(
+    return WeatherForecast(
       sun: SunForecast(
         rise: DateTime.parse(result['sun']['rise']),
         set: DateTime.parse(result['sun']['set']),
